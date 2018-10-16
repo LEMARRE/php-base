@@ -108,10 +108,19 @@ for ($a = 0; $a < 6; $a++) {
 		$indexStar--;
 	}
 
+echo '<hr/>';
 
 // Excercices table de multiplications :
 
+// Pour vous aider
 
+for ($i = 0; $i <= 10; $i++) {
+	for ($x = 0; $x <=10; $x++) {
+		echo $i*$x;
+
+	}
+	echo '<br/>';
+}
 
 
 
