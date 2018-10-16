@@ -114,17 +114,28 @@ echo '<hr/>';
 
 // Pour vous aider
 
-for ($i = 0; $i <= 10; $i++) {
-	for ($x = 0; $x <=10; $x++) {
-		echo $i*$x;
-
-	}
-	echo '<br/>';
+echo '<table cellspacing="0" align="center" border="1px">';
+echo '<thead >';
+for ($x = 0; $x <= 10; $x++) {
+	echo '<th>'.$x.'</th>';
 }
+for ($i = 0; $i <= 10; $i++) {
+	echo '<tr>';
 
+	for ($x = 0; $x <=10; $x++) {
+		if ($x % 2 == 0) {
+		echo '<td width="30px" align="center"bgcolor="#bdc3c7" >'.$i*$x.'</td>';
+		} else {
+			echo '<td width="30px" align="center">'.$i*$x.'</td>';
+		}
+	}
+	echo '</tr>';
 
+}
+echo '</thead>';
+echo '</table>';
 
-
+?>
 
 
 
