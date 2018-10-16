@@ -30,7 +30,7 @@ echo '3. Ecrire le code permettant de trouver le PGCD de 2 nombres';
 // 91 % 39 = 13;
 // 39 % 13 = 0;
 
-echo gmp_gcd(845, 312);
+// echo gmp_gcd(845, 312);
 
 $nombre1 = 845;
 $nombre2 = 312;
@@ -66,10 +66,50 @@ for ($i = 0; $i <= 100; $i++) {
 	}
 }
 
+echo '<br/>';
+
+echo '<hr/>';
+
+// Créer une boucle qui affiche 10 étoiles :
+
+// for ($i = 0; $i<10; $i++) {
+//     echo ' ⭐ ';
+// };
+
+// Imbriquer la boucle dans une autre boucle afin d'afficher 10 lignes de 10 étoiles :
+
+// for ($a = 10; $a > 0; $a--) {
+//     for ($i = 10; $i>0; $i--) {
+//         echo ' ⭐ ';
+//     };
+//     echo '<br/>';
+// }
 
 
+// Nous obtenons un carré. Trouver un moyen de modifier le code pour obtenir un triangle :
+
+$fullStar = 1; // Nbre d'étoile
+$indexStar = 5; // Position
 
 
+for ($a = 0; $a < 6; $a++) {
+    for ($i = 0; $i<11; $i++) {
+		if ($i == $indexStar) {
+		for ($y = 0; $y<$fullStar ;$y++){
+			echo '⭐';
+		}
+		$i += $fullStar - 1;
+			} else {
+			echo '🌟';
+			}
+		};
+		echo '<br/>';
+		$fullStar += 2;
+		$indexStar--;
+	}
+
+
+// Excercices table de multiplications :
 
 
 
