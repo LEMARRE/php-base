@@ -1,8 +1,8 @@
 <?php
 $eleves = [
     0 => [
-        'nom' => 'Matthieu',
-        'notes' => [10, 8, 16, 20, 17, 16, 15, 2]
+        'nom' => 'Bélinda',
+        'notes' => [10, 12, 16, 20, 17, 16, 15, 12]
     ],
     1 => [
         'nom' => 'Thomas',
