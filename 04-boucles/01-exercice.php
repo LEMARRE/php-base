@@ -115,23 +115,30 @@ echo '<hr/>';
 // Pour vous aider
 
 echo '<table cellspacing="0" align="center" border="1px">';
+
 echo '<thead >';
-for ($x = 0; $x <= 10; $x++) {
-	echo '<th>'.$x.'</th>';
+echo '<tr> <td align="center">X</td>';
+for ($y = 0; $y <= 10; $y++) {
+	$color = ($y % 2) ? 'grey' : 'lightgrey';
+	echo '<th>'.$y.'</th>';
 }
-for ($i = 0; $i <= 10; $i++) {
-	echo '<tr>';
 
-	for ($x = 0; $x <=10; $x++) {
-		if ($x % 2 == 0) {
-		echo '<td width="30px" align="center"bgcolor="#bdc3c7" >'.$i*$x.'</td>';
-		} else {
-			echo '<td width="30px" align="center">'.$i*$x.'</td>';
+echo '</tr>';
+
+	for ($i = 0; $i <= 10; $i++) {
+		echo'<th>'.$i.'</th>';
+
+		for ($x = 0; $x <=10; $x++) {
+			if ($x % 2 == 0) {
+			echo '<td width="30px" align="center" bgcolor="#bdc3c7" >'.$i*$x.'</td>';
+			} else {
+				echo '<td width="30px" align="center">'.$i*$x.'</td>';
+			}
 		}
-	}
-	echo '</tr>';
+		echo '</tr>';
+		echo '<br/>';
 
-}
+	}
 echo '</thead>';
 echo '</table>';
 
