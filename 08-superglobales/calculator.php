@@ -32,10 +32,11 @@
 
 <?php
 
-
-$number1 = $_GET['number1'];
-$number2 = $_GET['number2'];
-$radioSelect = $_GET['typeOfCalc'];
+if (!empty($_GET)){
+    $number1 = $_GET['number1'];
+    $number2 = $_GET['number2'];
+    $radioSelect = $_GET['typeOfCalc'];
+}
 
 function add($number1, $number2) {
     if (isset($number1, $number2)) {
@@ -95,6 +96,8 @@ if (isset($radioSelect)) {
         return div($number1, $number2);
     }
 }
+
+// Exo bonus d'ajout dynamique de case supplémentaire pour pouvoir calculer avec + de nombres (usage de JS et PHP indispensable)
 
 
 
