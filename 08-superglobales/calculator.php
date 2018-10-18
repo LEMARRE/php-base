@@ -1,26 +1,26 @@
-<form method="GET">
+<form method="POST">
 
     <label for="number1" >Number 1</label>
-    <input type="text" name="number1">
+    <input type="text" name="number1" id="number1">
 
     <label for="number2" >Number 2</label>
-    <input type="text" name="number2">
+    <input type="text" name="number2" id="number2">
 
     <br/>
     <br/>
 
     <div>
         <label for="add">+</label>
-        <input type="radio" name="typeOfCalc" value="add" checked />
+        <input type="radio" name="typeOfCalc" value="add" id="add" checked />
         <br/>
         <label for="sub">-</label>
-        <input type="radio" name="typeOfCalc" value="sub"/>
+        <input type="radio" name="typeOfCalc" value="sub" id="sub"/>
         <br/>
         <label for="mult">x</label>
-        <input type="radio" name="typeOfCalc" value="mult"/>
+        <input type="radio" name="typeOfCalc" value="mult" id="mult"/>
         <br/>
         <label for="div">/</label>
-        <input type="radio" name="typeOfCalc" value="div"/>
+        <input type="radio" name="typeOfCalc" value="div" id="div"/>
     </div>
 
     <br/>
@@ -32,10 +32,10 @@
 
 <?php
 
-if (!empty($_GET)){
-    $number1 = $_GET['number1'];
-    $number2 = $_GET['number2'];
-    $radioSelect = $_GET['typeOfCalc'];
+if (!empty($_POST)){
+    $number1 = $_POST['number1'];
+    $number2 = $_POST['number2'];
+    $radioSelect = $_POST['typeOfCalc'];
 }
 
 function add($number1, $number2) {
@@ -44,26 +44,11 @@ function add($number1, $number2) {
     }
 }
 
-// add($number1, $number2);
-
-// $number1 = $_POST['number1'];
-// $number2 = $_POST['number2'];
-
-// function add($number1, $number2) {
-//     if (isset($number1, $number2)) {
-//         echo $number1 + $number2;
-//     }
-// }
-
-// add($number1, $number2);
-
 function sub($number1, $number2) {
     if (isset($number1, $number2)) {
         echo $number1 - $number2;
     }
 }
-
-// sub($number1, $number2);
 
 function mult($number1, $number2) {
     if (isset($number1, $number2)) {
@@ -71,16 +56,11 @@ function mult($number1, $number2) {
     }
 }
 
-// mult($number1, $number2);
-
 function div($number1, $number2) {
     if (isset($number1, $number2)) {
         echo $number1 / $number2;
     }
 }
-
-// div($number1, $number2);
-
 
 if (isset($radioSelect)) {
     if ($radioSelect == 'add') {
