@@ -17,7 +17,7 @@ $pizzas_list = $query->fetchAll();
                 foreach ($pizzas_list as $pizzas){ 
                     ?>
 
-                    <div class="col-md-3">
+                    <div class="col-10 col-sm-6 col-md-3" >
                         <div class="card mb-4">
                             <div class="card-img-top-container">
                             <a href="pizza_single.php<?php echo "?id=" .$pizzas['id'];?>"><img class ="card-img-top card-img-top-zoom-effect" src="assets/<?php echo $pizzas['image'].'"'; ?> "></a>

@@ -7,14 +7,6 @@ require_once __DIR__.'/partials/header.php';
 // Récupérer la pizza avec l'id 3 :
 // Récupérer l'id dynamiquement à partir de l'URL (grâce à $id) :
 
-$id = isset($_GET['id']) ? $_GET['id'] : 0;
-
-if (is_numeric($id)) {
-$query = $db->prepare('SELECT * FROM pizza WHERE id= '.$id);
-$query->bindValue(':id', $id, PDO::PARAM_INT); //On s'assure que l'id est bien un entier
-$query->execute();
-$pizza = $query->fetch();
-
 $query2 = $db->query('SELECT * FROM size');
 $size = $query2->fetchAll();
 
@@ -22,13 +14,24 @@ $size = $query2->fetchAll();
 
 <main class="container">
         <h1><?php 
+        $id = isset($_GET['id']) ? $_GET['id'] : 0;
+
+        if (is_numeric($id)) {
+        $query = $db->prepare('SELECT * FROM pizza WHERE id= '.$id);
+        $query->bindValue(':id', $id, PDO::PARAM_INT); //On s'assure que l'id est bien un entier
+        $query->execute();
+        $pizza = $query->fetch();       
             if ($pizza) {
                 echo $pizza['name'];
-            } else 
-                echo 'La pizza n\'existe pas';
             } else {
-            echo '<h1>La pizza n\'existe pas</h1>';
-            } ?>
+                echo 'La pizza n\'existe pas';
+                die();
+            }
+        } else {
+                echo 'La pizza n\'existe pas';
+                die();
+        }
+             ?>
         </h1>
         <div class="row justify-content-center">   
             <div class="col-sm-4">
