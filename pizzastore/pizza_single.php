@@ -17,18 +17,20 @@ $size = $query2->fetchAll();
         $id = isset($_GET['id']) ? $_GET['id'] : 0;
 
         if (is_numeric($id)) {
-        $query = $db->prepare('SELECT * FROM pizza WHERE id= '.$id);
+        $query = $db->prepare('SELECT * FROM pizza WHERE id = :id');
         $query->bindValue(':id', $id, PDO::PARAM_INT); //On s'assure que l'id est bien un entier
         $query->execute();
         $pizza = $query->fetch();       
             if ($pizza) {
                 echo $pizza['name'];
             } else {
-                echo 'La pizza n\'existe pas';
+                echo 'Erreur 404 - La pizza n\'existe pas <img src="assets/img/travolta.gif">';
+                http_response_code(404);
                 die();
             }
         } else {
-                echo 'La pizza n\'existe pas';
+                echo 'Erreur 404 - La pizza n\'existe pas <img src="assets/img/travolta.gif">';
+                http_response_code(404);
                 die();
         }
              ?>
@@ -48,7 +50,7 @@ $size = $query2->fetchAll();
                             $suppl_price = $values['price'];
                             $total_price = $pizza_price + $suppl_price;
                         ?>
-                        <div class="custom-control custom-checkbox">
+                        <div class="custom-control custom-radio">
                             <input type="radio" class="form-check-input" id="customControlValidation<?php echo $values['id'];?>">
                             <label class="form-check-label" for="customControlValidation<?php echo $values['id'];?>"><?php echo $size_name;?> = <?php echo $total_price?> €</label>
                         </div>
