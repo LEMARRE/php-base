@@ -1,22 +1,34 @@
 <?php
 $currentPageTitle = "Ajouter une pizza";
 require_once __DIR__.'/partials/header.php';
+
+$name = null;
+$price = null;
+$description = null;
+$categorie = null;
+
+if (!empty($_POST)) { // Si le formulaire est soumis
+  $name = $_POST['name'];
+  $price = $_POST['price'];
+  $description = $_POST['description'];
+  $categorie = $_POST['categorie'];
+}
+
+
 ?>
 
-
-
 <div class="container">
-<h1>Ajouter une pizza </h1>
+  <h1>Ajouter une pizza </h1>
 
-  <form method="POST">
+  <form action="pizza_add.php" method="POST">
   
     <div class="form-group">
       <label for="name" >Nom</label>
-      <input type="name" class="form-control" id="name" placeholder="Nom de la pizza">
+      <input type="text" class="form-control" id="name">
     </div>
     <div class="form-group">  
       <label for="price">Prix</label>
-      <input type="number" min="5" max="17" class="form-control" id="price" placeholder="Prix entre 5 et 17€">
+      <input type="number" min="5" max="17" class="form-control" id="price" >
     </div>
     <div class="form-group">
       <label for="categorie">Catégorie</label>
@@ -44,35 +56,38 @@ require_once __DIR__.'/partials/header.php';
 
 <?php
 
-$name = null;
-$price = null;
-$description = null;
-$categorie = null;
-$file = null;
 
-if (!empty($_POST)){
-    $isValide = false;
-    $name = $_POST['name'];
-    $price = $_POST['price'];
-    $description = $_POST['description'];
-    $categorie = $_POST['categorie'];
-    $file = $_POST['file'];
+
+  if (!empty($_POST)) { // Si le formulaire est soumis
+    $isValid = true;
 
     if (strlen($name) == 0) {
-        $isValide = false;
-        echo('Le nom doit être renseigné'.'<br/>');
+      $isValid = false;
+          echo 'Le nom est vide. <br />';
+      }
+      if (empty($price)) {
+        $isValid = false;
+          echo 'Le prix ne doit pas être vide. <br />';
+      }
+      if (empty($categorie)) {
+        $isValid = false;
+          echo 'La catégorie doit être sélectionnée. <br />';
+      }
+      if (strlen($description) < 15) {
+        $isValid = false;
+          echo 'La description est trop court.';
+      }
+
+      if ($isValid) {
+        echo 'Ajout de la nouvelle pizza';
     }
-    if (strlen($description) == 0) {
-      $isValide = false;
-      echo('Le nom doit être renseigné'.'<br/>');
-  }
-    if ($isValide) {
-        echo 'Ajout de la pizza';
-  }
-}
 
-?>
+  }
 
-<?php
+$query = $db->prepare('INSERT INTO pizza (name, price) VALUES (:name, :price)');
+$query->bindValue(':name', $name, PDO::PARAM_STR);
+$query->bindValue(':price', $price, PDO::PARAM_STR);
+$query->execute();
+
 require_once __DIR__.'/partials/footer.php';
 ?>
