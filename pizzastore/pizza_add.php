@@ -1,93 +1,168 @@
 <?php
-$currentPageTitle = "Ajouter une pizza";
-require_once __DIR__.'/partials/header.php';
+$currentPageTitle = 'Ajouter une pizza';
+// Le fichier header.php est inclus sur la page
+require_once(__DIR__.'/partials/header.php');
 
-$name = null;
-$price = null;
-$description = null;
-$categorie = null;
+// Traitement du formulaire
+$name = $price = $image = $category = $description = null;
 
-if (!empty($_POST)) { // Si le formulaire est soumis
-  $name = $_POST['name'];
-  $price = $_POST['price'];
-  $description = $_POST['description'];
-  $categorie = $_POST['categorie'];
-}
+// var_dump($_FILES);
 
+// le formulaire est soumis
+if (!empty($_POST)) {
+    $name = $_POST['name'];
+    $price = str_replace(',', '.', $_POST['price']); // on remplace la , par un . pour le prix
+    $image = $_FILES['image'];
+    $category = $_POST['category'];
+    $description = $_POST['description'];
 
-?>
+    // Raccourci avec l'interpolation de variables
+    // ${'variable'} = 'valeur';
+    // $key = 'variable';
+    // ${$key} = 'valeur';
+    // foreach ($_POST as $key => $field) {
+    //    $$key = $field;
+    // }
 
-<div class="container">
-  <h1>Ajouter une pizza </h1>
+    // Définir un tableau d'erreur vide qui va se remplir après chaque erreur
+    $errors = [];
 
-  <form action="pizza_add.php" method="POST">
-  
-    <div class="form-group">
-      <label for="name" >Nom</label>
-      <input type="text" class="form-control" id="name">
-    </div>
-    <div class="form-group">  
-      <label for="price">Prix</label>
-      <input type="number" min="5" max="17" class="form-control" id="price" >
-    </div>
-    <div class="form-group">
-      <label for="categorie">Catégorie</label>
-      <select class="form-control" id="categorie">
-        <option>Végétarienne</option>
-        <option>Viande</option>
-        <option>Poisson</option>
-        <option>Fromages</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="image">Image de la pizza</label>
-      <input type="file" class="form-control-file" id="image">
-    </div>
-    <div class="form-group">
-      <label for="description">Description</label>
-      <textarea class="form-control" id="description" rows="3"></textarea>
-    </div>
-    <div class="form-group">
-      <button class="btn btn-success form-control" id="send">Ajouter la nouvelle pizza</button>
-    </div>
-    </div>
-  </form>
-</div>
-
-<?php
-
-
-
-  if (!empty($_POST)) { // Si le formulaire est soumis
-    $isValid = true;
-
-    if (strlen($name) == 0) {
-      $isValid = false;
-          echo 'Le nom est vide. <br />';
-      }
-      if (empty($price)) {
-        $isValid = false;
-          echo 'Le prix ne doit pas être vide. <br />';
-      }
-      if (empty($categorie)) {
-        $isValid = false;
-          echo 'La catégorie doit être sélectionnée. <br />';
-      }
-      if (strlen($description) < 15) {
-        $isValid = false;
-          echo 'La description est trop court.';
-      }
-
-      if ($isValid) {
-        echo 'Ajout de la nouvelle pizza';
+    // Vérifier le name
+    if (empty($name)) {
+        $errors['name'] = 'Le nom n\'est pas valide';
+    }
+    // Vérifier le price
+    if (!is_numeric($price) || $price < 5 || $price > 19.99) {
+        $errors['price'] = 'Le prix n\'est pas valide';
+    }
+    // Vérifier l'image
+    if ($image['error'] === 4) {
+        $errors['image'] = 'L\'image n\'est pas valide';
+    }
+    // Vérifier la catégorie
+    if (empty($category) || !in_array($category, ['Classique', 'Spicy', 'Hot', 'Végétarienne'])) {
+        $errors['category'] = 'La catégorie n\'est pas valide';
+    }
+    // Vérifier la description
+    if (strlen($description) < 10) {
+        $errors['description'] = 'La description n\'est pas valide';
     }
 
-  }
+    // upload de l'image :
+    if (empty($errors)) {
+      $file = $image['tmp_name']; // Emplacement du fichier temporaire
+      $fileName = 'img/pizza/'.$image['name'];
+      $finfo = finfo_open(FILEINFO_MIME_TYPE);
+      $mimeType = finfo_file($finfo, $file);
+      $allowedExtensions = ['image/jpg', 'image/jpeg', 'image/gif', 'image/png'];
+      if (!in_array($mimeType, $allowedExtensions)) {
+        $errors['image'] = 'Ce type de fichier n\'est pas autorisé';
+      }
+      if($image['size'] / 1024 > 2000) {
+        $errors['image'] = 'L\'image est trop lourde';
+      }
+      if(!isset($errors['image'])) {
+      move_uploaded_file($file, __DIR__.'/assets/'.$fileName);
+      }
+    }
 
-$query = $db->prepare('INSERT INTO pizza (name, price) VALUES (:name, :price)');
-$query->bindValue(':name', $name, PDO::PARAM_STR);
-$query->bindValue(':price', $price, PDO::PARAM_STR);
-$query->execute();
+    // S'il n'y a pas d'erreurs dans le formulaire
+    if (empty($errors)) {
+        $query = $db->prepare('
+            INSERT INTO pizza (`name`, `price`, `image`, `category`, `description`) VALUES (:name, :price, :image, :category, :description)
+        ');
+        $query->bindValue(':name', $name, PDO::PARAM_STR);
+        $query->bindValue(':price', $price, PDO::PARAM_STR);
+        $query->bindValue(':image', $fileName, PDO::PARAM_STR);
+        $query->bindValue(':category', $category, PDO::PARAM_STR);
+        $query->bindValue(':description', $description, PDO::PARAM_STR);
 
-require_once __DIR__.'/partials/footer.php';
+        if ($query->execute()) { // On insère la pizza dans la BDD
+            $success = true;
+            // Envoyer un mail ?
+            // Logger la création de la pizza
+        }
+    }
+}
+
 ?>
+
+<main class="container">
+    <h1 class="page-title">Ajouter une pizza</h1>
+
+    <?php if (isset($success) && $success) { ?>
+        <div class="alert alert-success alert-dismissible fade show">
+            La pizza <strong><?php echo $name; ?></strong> a bien été ajouté avec l'id <strong><?php echo $db->lastInsertId(); ?></strong> !
+            <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    <?php } ?>
+    
+    <form method="POST" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="name">Nom :</label>
+                    <input type="text" name="name" id="name" class="form-control <?php echo isset($errors['name']) ? 'is-invalid' : null; ?>" value="<?php echo $name; ?>">
+                    <?php if (isset($errors['name'])) {
+                        echo '<div class="invalid-feedback">';
+                            echo $errors['name'];
+                        echo '</div>';
+                    } ?>
+                </div>
+                <div class="form-group">
+                    <label for="price">Prix :</label>
+                    <input type="text" name="price" id="price" class="form-control <?php echo isset($errors['price']) ? 'is-invalid' : null; ?>" value="<?php echo $price; ?>">
+                    <?php if (isset($errors['price'])) {
+                        echo '<div class="invalid-feedback">';
+                            echo $errors['price'];
+                        echo '</div>';
+                    } ?>
+                </div>
+                <div class="form-group">
+                    <label for="image">Image :</label>
+                    <input type="file" name="image" id="image" class="form-control <?php echo isset($errors['image']) ? 'is-invalid' : null; ?>">
+                    <?php if (isset($errors['image'])) {
+                        echo '<div class="invalid-feedback">';
+                            echo $errors['image'];
+                        echo '</div>';
+                    } ?>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="category">Catégorie :</label>
+                    <select name="category" id="category" class="form-control <?php echo isset($errors['category']) ? 'is-invalid' : null; ?>">
+                        <option value="">Choisir la catégorie</option>
+                        <option <?php echo ($category === 'Classique') ? 'selected' : ''; ?> value="Classique">Classique</option>
+                        <option <?php echo ($category === 'Spicy') ? 'selected' : ''; ?> value="Spicy">Spicy</option>
+                        <option <?php echo ($category === 'Hot') ? 'selected' : ''; ?> value="Hot">Hot</option>
+                        <option <?php echo ($category === 'Végétarienne') ? 'selected' : ''; ?> value="Végétarienne">Végétarienne</option>
+                    </select>
+                    <?php if (isset($errors['category'])) {
+                        echo '<div class="invalid-feedback">';
+                            echo $errors['category'];
+                        echo '</div>';
+                    } ?>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description :</label>
+                    <textarea name="description" id="description" rows="5" class="form-control <?php echo isset($errors['description']) ? 'is-invalid' : null; ?>"><?php echo $description; ?></textarea>
+                    <?php if (isset($errors['description'])) {
+                        echo '<div class="invalid-feedback">';
+                            echo $errors['description'];
+                        echo '</div>';
+                    } ?>
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <button class="btn btn-lg btn-block btn-danger text-uppercase font-weight-bold">Ajouter</button>
+        </div>
+    </form>
+</main>
+
+<?php
+// Le fichier footer.php est inclus sur la page
+require_once(__DIR__.'/partials/footer.php'); ?>
